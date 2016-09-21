@@ -1,0 +1,10 @@
+models:
+    image: tp33/django
+    external_links:
+      -  mysql:db
+    volumes:
+      - "$PWD/app:/app"
+    ports:
+      - "8000:8000"
+
+    command: bash -c "bash /app/project2/script.sh"
