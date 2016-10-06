@@ -11,21 +11,32 @@ from django.core import serializers
 # PROFILE API
 #-------------------------------------------------------------------------------------------------------------#
 def create_profile(request):
-    if request.method != 'POST':
-    	return _error_response(request, "Must make POST request.")
+    if not request.POST:
+        return _error_response(request, "Must make POST request.")
     if 'username' not in request.POST or 'first_name' not in request.POST or 'last_name' not in request.POST or 'email' not in request.POST or 'location' not in request.POST:
-    	return _error_response(request, "Missing required fields.")
+        missing = ""
+        if 'username' not in request.POST:
+            missing += 'username '
+        if 'first_name' not in request.POST:
+            missing += 'first_name '
+        if 'last_name' not in request.POST:
+            missing += 'last_name '
+        if 'email' not in request.POST:
+            missing += 'email '
+        if 'location' not in request.POST:
+            missing += 'location '
+        return _error_response(request, "Missing required fields: " + missing)
 
     u = models.Profile(username=request.POST['username'], first_name=request.POST['first_name'], last_name=request.POST['last_name'], email=request.POST['email'], active=False, date_joined=datetime.datetime.now(), location=request.POST['location'])
-    try:	
-    	u.save()
+    try:
+        u.save()
     except db.Error:
         return _error_response(request, str(db.Error))
     return _success_response(request, {'profile_id': u.pk})
 
 
 def retrieve_profile(request, profile_id):
-    if request.method != 'GET':
+    if not request.GET:
         return _error_response(request, "Must make GET request.")
 
     try:
@@ -43,7 +54,7 @@ def retrieve_profile(request, profile_id):
 
 
 def update_profile(request, profile_id):
-    if request.method != 'POST':
+    if not request.POST:
         return _error_response(request, "Must make POST request.")
 
     try:
@@ -79,7 +90,7 @@ def update_profile(request, profile_id):
 #PRODUCT API
 #-------------------------------------------------------------------------------------------------------------#
 def create_product(request, seller_id):
-    if request.method != 'POST':
+    if not request.POST:
         return _error_response(request, "Must make POST request.")
     if 'name' not in request.POST or 'description' not in request.POST or 'price' not in request.POST:
         return _error_response(request, "Missing required fields.")   
@@ -103,7 +114,7 @@ def create_product(request, seller_id):
 
 
 def retrieve_product(request, product_id):
-    if request.method != 'GET':
+    if not request.GET:
         return _error_response(request, "Must make GET request.")
 
     try:
@@ -130,7 +141,7 @@ def retrieve_product(request, product_id):
 
 
 def update_product(request, product_id):
-    if request.method != 'POST':
+    if not request.POST:
         return _error_response(request, "Must make POST request.")
 
     try:
@@ -167,7 +178,7 @@ def update_product(request, product_id):
 
 
 def delete_product(request, product_id):
-    if request.method != 'POST':
+    if not request.POST:
         return _error_response(request, "Must make POST request.")
 
     try:
@@ -183,7 +194,7 @@ def delete_product(request, product_id):
 #ORDER API
 #-------------------------------------------------------------------------------------------------------------#
 def create_order(request, buyer_id):
-    if request.method != 'POST':
+    if not request.POST:
         return _error_response(request, "Must make POST request.")
     try:
         v = models.Profile.objects.get(pk=buyer_id)
@@ -201,7 +212,7 @@ def create_order(request, buyer_id):
 
 
 def retrieve_order(request, order_id):
-    if request.method != 'GET':
+    if not request.GET:
         return _error_response(request, "Must make GET request.")
 
     try:
@@ -225,7 +236,7 @@ def retrieve_order(request, order_id):
 #REVIEW API
 #-------------------------------------------------------------------------------------------------------------#
 def create_review(request, author_id, product_id):
-    if request.method != 'POST':
+    if not request.POST:
         return _error_response(request, "Must make POST request.")
     if 'description' not in request.POST or 'rating' not in request.POST:
         return _error_response(request, "Missing required fields.")
@@ -257,7 +268,7 @@ def create_review(request, author_id, product_id):
 
 
 def retrieve_review(request, review_id):
-    if request.method != 'GET':
+    if not request.GET:
         return _error_response(request, "Must make GET request.")
 
     try:
@@ -273,7 +284,7 @@ def retrieve_review(request, review_id):
 
 
 def update_review(request, review_id):
-    if request.method != 'POST':
+    if not request.POST:
         return _error_response(request, "Must make POST request.")
 
     try:
@@ -297,7 +308,7 @@ def update_review(request, review_id):
 
 
 def delete_review(request, review_id):
-    if request.method != 'POST':
+    if not request.POST:
         return _error_response(request, "Must make POST request.")
 
     try:
