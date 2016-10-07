@@ -5,6 +5,30 @@ models:
     volumes:
       - "$PWD/app:/app"
     ports:
-      - "8000:8000"
+      - "8002:8000"
 
     command: bash -c "bash /app/project2/script.sh"
+
+
+exp:
+    image: tp33/django
+    links:
+      -  models:models-api
+    volumes:
+      - "$PWD/app:/app"
+    ports:
+      - "8001:8000"
+
+    command: bash -c "mod_wsgi-express start-server --port 8000 --working-directory /app/exp --reload-on-changes /app/exp/exp/wsgi.py"
+
+
+web:
+    image: tp33/django
+    links:
+      -  exp:exp-api
+    volumes:
+      - "$PWD/app:/app"
+    ports:
+      - "8000:8000"
+
+    command: bash -c "mod_wsgi-express start-server --port 8000 --working-directory /app/web --reload-on-changes /app/web/web/wsgi.py"  
