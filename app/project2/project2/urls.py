@@ -20,25 +20,25 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)), 
 
    #Profile API
-   url(r'^api/v1/profiles/create$', views.create_profile), 	\
-   url(r'^api/v1/profiles/(\d+)/retrieve$', views.retrieve_profile), 	\
-   url(r'^api/v1/profiles/(\d+)/update$', views.update_profile), 	\
+   url(r'^api/v1/profiles/create$', views.create_profile, name = "create_profile"), 	\
+   url(r'^api/v1/profiles/(\d+)/retrieve$', views.retrieve_profile, name = "retrieve_profile"), 	\
+   url(r'^api/v1/profiles/(\d+)/update$', views.update_profile, name = "update_profile"), 	\
 
    #Product API  
-   url(r'^api/v1/products/(\d+)/create$', views.create_product),	\
-   url(r'^api/v1/products/(\d+)/retrieve$', views.retrieve_product),	\
-   url(r'^api/v1/products/(\d+)/update$', views.update_product),	\
-   url(r'^api/v1/products/(\d+)/delete$', views.delete_product),    	\
+   url(r'^api/v1/products/(\d+)/create$', views.create_product, name = "create_product"),	\
+   url(r'^api/v1/products/(\d+)/retrieve$', views.retrieve_product, name = "retrieve_product"),	\
+   url(r'^api/v1/products/(\d+)/update$', views.update_product, name = "update_product"),	\
+   url(r'^api/v1/products/(\d+)/delete$', views.delete_product, name = "delete_product"),    	\
 
    #Order API
-   url(r'^api/v1/orders/(\d+)/create$', views.create_order),	\
-   url(r'^api/v1/orders/(\d+)/retrieve$', views.retrieve_order),	\
+   url(r'^api/v1/orders/(\d+)/create$', views.create_order, name = "create_order"),	\
+   url(r'^api/v1/orders/(\d+)/retrieve$', views.retrieve_order, name = "retrieve_order"),	\
 
    #Review API
-   url(r'^api/v1/reviews/(\d+)/(\d+)/create$', views.create_review), 	\
-   url(r'^api/v1/reviews/(\d+)/retrieve$', views.retrieve_review),	\
-   url(r'^api/v1/reviews/(\d+)/update$', views.update_review),	\
-   url(r'^api/v1/reviews/(\d+)/delete$', views.delete_review)	\
+   url(r'^api/v1/reviews/(\d+)/(\d+)/create$', views.create_review, name = "create_review"), 	\
+   url(r'^api/v1/reviews/(\d+)/retrieve$', views.retrieve_review, name = "retrieve_review"),	\
+   url(r'^api/v1/reviews/(\d+)/update$', views.update_review, name = "update_review"),	\
+   url(r'^api/v1/reviews/(\d+)/delete$', views.delete_review, name = "delete_review")	\
 
 
 ]
