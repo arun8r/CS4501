@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><META http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>
+
+
+
+<head>
+<link rel="stylesheet" href="https://bootswatch.com/sandstone/bootstrap.min.css">
+</head>
+
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="/">Tennis Heaven</a>
+    </div>
+
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-2">
+
+      <form class="navbar-form navbar-right" role="search">
+        <div class="form-group">
+          <input class="form-control" placeholder="Search" type="text">
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+      </form>
+    </div>
+  </div>
+</nav>
+
+
+ <div class="container">
+                <div class="row">
+                        <div class="main-login main-center">
+                                        <form id = "form" method="POST" action="" role="form">
+                                                {% csrf_token %}
+                                                <div class="form-group">
+                                                        <h2>Sign Up</h2>
+                                                </div>
+
+                                                {% for field in form %}
+                                                        <div class = "form-group">
+                                                        <label class = "control-label">{{ field.label_tag }}</label>
+                                                        <div style = "width: 70%">{{ field }}</div></div>                               
+                                                {% endfor %}
+
+                                                <div class="form-group">
+                                                        <button id="signupSubmit" type="submit" class="btn btn-info">Sign Up</button>
+                                                </div>
+                                        </form>
+                        </div>
+                </div>
+        </div>
+
+
+</body></html>
+
+
