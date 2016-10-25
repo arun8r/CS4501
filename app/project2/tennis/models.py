@@ -14,7 +14,7 @@ class Profile(models.Model):
 	active = models.BooleanField()
 	date_joined = models.DateTimeField()
 	location = models.CharField(max_length = 50)
-	#password = models.SomeField + hash , dont want clear text passwords, to be implemented later in Project 4 apparently
+	password = models.CharField(max_length = 96)
 
 
 class Order(models.Model):
@@ -34,10 +34,14 @@ class Product(models.Model):
 	order = models.ForeignKey(Order, blank = True, null = True)
 
 
-
 class Review(models.Model):
 	author = models.ForeignKey(Profile)
 	description = models.CharField(max_length = 1000)
 	date_written = models.DateTimeField()
 	rating = models.PositiveIntegerField(validators=[MinValueValidator(1), MaxValueValidator(5),])
 	product = models.ForeignKey(Product)
+	
+class Authenticator(models.Model):
+	user_id = models.PositiveIntegerField()
+	authenticator = models.CharField(max_length = 255, primary_key = True)
+	date_created = models.DateTimeField()

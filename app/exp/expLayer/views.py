@@ -16,6 +16,21 @@ def home(request):
 	return _success_response(request, homePageItems)
 	
 
+def signup(request):
+	if request.method != 'POST':
+		return _error_response(request, "Must make POST request.")
+	try:
+		req = urllib.request.Request('http://models-api:8000/api/v1/profiles/create', request.POST)
+	except e:
+		return _error_response(request, "Sign up failed.")	
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	return _success_response(request, resp)	
+	
+	
+	
+
+
 def retrieve_recent(request, num):
 	response = retrieve_stats(request)
 	json_obj = json.loads((response.content).decode("utf-8"))

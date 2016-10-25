@@ -20,7 +20,8 @@ from webLayer import views
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^$', views.index, name = 'index'),
-
+	url(r'^signup$', views.signup, name = 'signup'),
+	#url(r'^login$', views.login, name = 'login'),
     url(r'^(?P<product_id>[0-9]+)/$', views.product, name='getProduct'),
     url(r'^api/v1/profiles/(\d+)/retrieve$', views.retrieve_profile), 
     url(r'^api/v1/products/(\d+)/retrieve$', views.retrieve_product), 

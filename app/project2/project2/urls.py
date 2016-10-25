@@ -41,7 +41,11 @@ urlpatterns = [
    url(r'^api/v1/reviews/(\d+)/delete$', views.delete_review, name = "delete_review"),	\
    
    #Statistics API
-   url(r'^api/v1/stats$', views.stats, name = "stats"),
+   url(r'^api/v1/stats$', views.stats, name = "stats"),	\
 
+   #User Authentication API
+   url(r'^api/v1/authentication/create$', views.create_authenticator, name = "create_authenticator"),		
+   url(r'^api/v1/authentication/authenticate$', views.authenticate, name = "authenticate"),	
+   url(r'^api/v1/authentication/deauthenticate$', views.delete_authenticator, name = "delete_authentication"),	
 
 ]

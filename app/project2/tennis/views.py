@@ -6,14 +6,18 @@ from django import db
 from tennis import models
 from django.shortcuts import render
 from django.core import serializers
-
+from django.contrib.auth import hashers
+import random
+from project2 import settings
+import os
+import hmac
 
 # PROFILE API
 #-------------------------------------------------------------------------------------------------------------#
 def create_profile(request):
     if request.method != 'POST':
         return _error_response(request, "Must make POST request.")
-    if 'username' not in request.POST or 'first_name' not in request.POST or 'last_name' not in request.POST or 'email' not in request.POST or 'location' not in request.POST:
+    if 'username' not in request.POST or 'first_name' not in request.POST or 'last_name' not in request.POST or 'email' not in request.POST or 'location' not in request.POST or 'password' not in request.POST:
         missing = ""
         if 'username' not in request.POST:
             missing += 'username '
@@ -25,9 +29,13 @@ def create_profile(request):
             missing += 'email '
         if 'location' not in request.POST:
             missing += 'location '
+        if 'password' not in request.POST:
+            missing += 'password '
+            
         return _error_response(request, "Missing required fields: " + missing)
 
-    u = models.Profile(username=request.POST['username'], first_name=request.POST['first_name'], last_name=request.POST['last_name'], email=request.POST['email'], active=False, date_joined=datetime.datetime.now(), location=request.POST['location'])
+    u = models.Profile(username=request.POST['username'], first_name=request.POST['first_name'], last_name=request.POST['last_name'], email=request.POST['email'], active=False, date_joined=datetime.datetime.now(), location=request.POST['location'], password = hashers.make_password(request.POST['password']))
+    
     try:
         u.save()
     except db.Error:
@@ -322,7 +330,7 @@ def delete_review(request, review_id):
 
 
 #STATISTICS API
-#-------------------------------------------------------------------------------------------------------------#
+#--------------0-----------------------------------------------------------------------------------------------#
 
 
 def stats(request):
@@ -335,6 +343,48 @@ def stats(request):
 											   'reviewCount': models.Review.objects.count(), 	})
 
 
+
+#AUTHENTICATION API
+#-------------------------------------------------------------------------------------------------------------#
+def create_authenticator(request, user_id):
+	try:
+		v = models.Authenticator.objects.get(user_id=user_id)
+		delete_authenticator(request, user_id)
+	except models.Authenticator.DoesNotExist:
+		pass
+	k = hmac.new(key = settings.SECRET_KEY.encode('utf-8'), msg = os.urandom(32), digestmod = 'sha256').hexdigest()
+	try:
+		v = models.Authenticator.objects.get(authenticator=k)
+		delete_authenticator(request, v.user_id)
+	except models.Authenticator.DoesNotExist:
+		pass	
+	u = models.Authenticator(user_id = user_id, authenticator = k, date_created = datetime.datetime.now())
+	try:
+		u.save()
+	except db.Error:
+		return _error_response(request, "Authentication failed.")
+	return _success_response(request, k)
+
+def authenticate(request, user_id, authenticator):
+	try:
+		u = models.Authenticator.objects.get(pk=authenticator)
+	except models.Authenticator.DoesNotExist:
+		return _error_response(request, "Authentication error.")
+
+	if u.user_id == user_id:
+			return _success_response(request, "Authentication successful.")
+	return _error_response(request, "Authentication error.")
+	
+def delete_authenticator(request, user_id):
+    try:
+        u = models.Authenticator.objects.get(user_id = user_id)
+    except models.Review.DoesNotExist:
+        return _error_response(request, "User not authenticated.")
+
+    u.delete()    
+
+    return _success_response(request)	
+	
 #JSON Response Methods
 
 def _error_response(request, error_msg):

@@ -1,10 +1,13 @@
 from django.shortcuts import render
+import urllib
 import urllib.request
 import urllib.parse
 import json
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.template import loader
+from webLayer.forms import UserSignUpForm, UserLoginForm
+
 
 def index(request):
 	template = loader.get_template('webLayer/index.html')
@@ -20,7 +23,35 @@ def index(request):
 	context = resp["resp"]
 	return HttpResponse(template.render(context, request))	
 	
-
+def signup(request):
+	form = UserSignUpForm(request.POST or None)	
+	if request.method == "GET":
+		return render(request, "webLayer/signup.html", {"form":form})
+	
+	if not form.is_valid():
+		return render(request, "webLayer/signup.html", {"form":form})
+	
+	username = form.cleaned_data["username"]
+	password = form.cleaned_data["password"]
+	fname = form.cleaned_data["fname"]
+	lname = form.cleaned_data["lname"]
+	email = form.cleaned_data["email"]
+	location = form.cleaned_data["location"]
+		
+	data = {"username": username, "password": password, "first_name":fname, "last_name":lname, "email":email, "location":location,}
+	
+	postData = urllib.parse.urlencode(data).encode("utf-8")
+	try:
+		req = urllib.request.Request('http://exp-api:8000/api/v1/signup', data = postData, method = "POST", headers={'Content-Type': 'application/json'})
+	except e:
+		return render(request, "webLayer/signup.html", {"form":form})
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	
+	if not resp or not resp["ok"]:
+		return render(request, "webLayer/signup.html", {"form":form})
+					
+	return redirect('login')
 
 def product(request, product_id):
     template = loader.get_template('webLayer/product.html')
