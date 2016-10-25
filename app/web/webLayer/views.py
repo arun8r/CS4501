@@ -6,7 +6,7 @@ import json
 from django.http import JsonResponse
 from django.http import HttpResponse
 from django.template import loader
-from webLayer.forms import UserSignUpForm, UserLoginForm
+from webLayer.forms import UserSignUpForm, UserLoginForm, ProductCreationForm
 
 
 def index(request):
@@ -52,6 +52,50 @@ def signup(request):
 		return render(request, "webLayer/signup.html", {"form":form})
 					
 	return redirect('login')
+
+def login(request):
+	form = UserLoginForm(request.POST or None)
+	if request.method == "GET":
+		return render(request, "webLayer/login.html", {"form":form})
+	if not form.is_valid():
+		return render(request, "webLayer/login.html", {"form": form})
+	username = form.cleaned_data["username"]
+	password = form.cleaned_data["password"]
+	data = {"username": username, "password": password}
+	postData = urllib.parse.urlencode(data).encode("utf-8")
+	try:
+		req = urllib.request.Request('http://exp-api:8000/api/v1/signup', data = postData, method = "POST", headers={'Content-Type': 'application/json'})
+	except e:
+		return render(request, "webLayer/login.html", {"form":form})
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+
+	if not resp or not resp["ok"]:
+		return render(request, "webLayer/login.html", {"form":form})
+
+	return redirect('/')
+
+def create_listing(request):
+	form = ProductCreationForm(request.POST or None)
+	if request.method == "GET":
+		return render(request, "webLayer/create-listing.html", {"form": form})
+	if not form.is_valid():
+		return render(request, "webLayer/create-listing.html", {"form": form})
+	name = form.cleaned_data["name"]
+	description = form.cleaned_data["description"]
+	price = form.cleaned_data["price"]
+	data = {"name": name, "description": description, "price": price}
+	postData = urllib.parse.urlencode(data).encode("utf-8")
+	try:
+		req = urllib.request.Request('http://exp-api:8000/api/v1/signup', data = postData, method = "POST", headers = {'Content-Type': 'application/json'})
+	except e:
+		return render(request, "webLayer/create-listing.html", {"form": form})
+	resp_json = urllib.request.urlopen(req).read().decode("utf-8")
+	resp - json.loads(resp_json)
+	if not resp or not resp["ok"]:
+		return render(request, "webLayer/create-listing.html", {"form": form})
+
+	return redirect('/')
 
 def product(request, product_id):
     template = loader.get_template('webLayer/product.html')

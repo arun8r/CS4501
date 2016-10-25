@@ -1,13 +1,11 @@
-from django.contrib.auth.models import User
 from django import forms
-from django.contrib.auth import authenticate, get_user_model, login
 
 
 class UserLoginForm(forms.Form):
-	username = forms.CharField()
+	username = forms.CharField(max_length = 50)
 	password = forms.CharField(widget = forms.PasswordInput)
 
-
+# Do not include fields active and date_joined, set automatically when user presses submit
 class UserSignUpForm(forms.Form):
 	username = forms.CharField()
 	password = forms.CharField(widget = forms.PasswordInput)
@@ -15,6 +13,12 @@ class UserSignUpForm(forms.Form):
 	lname = forms.CharField()
 	email = forms.CharField()
 	location = forms.CharField()
-	
-	
+
+class ProductCreationForm(forms.Form):
+	name = forms.CharField(max_length = 100)
+	description = forms.CharField(max_length = 1000)
+	price = forms.DecimalField(max_digits = 8, decimal_places = 2)
+
+
+
 

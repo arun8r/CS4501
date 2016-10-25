@@ -1,15 +1,10 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html>
-<head>
-    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
-</head>
-<body>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"><html><head><META http-equiv="Content-Type" content="text/html; charset=utf-8"></head><body>
+
 
 
 <head>
     <link rel="stylesheet" href="https://bootswatch.com/sandstone/bootstrap.min.css">
 </head>
-
 
 <nav class="navbar navbar-inverse">
     <div class="container-fluid">
@@ -25,21 +20,20 @@
 <div class="container">
     <div class="row">
         <div class="main-login main-center">
-            <form id="form" method="POST" action="" role="form">
+            <form id = "form" method="POST" action="" role="form">
                 {% csrf_token %}
                 <div class="form-group">
-                    <h2>Sign Up</h2>
+                    <h2>Login</h2>
                 </div>
 
                 {% for field in form %}
-                <div class="form-group">
-                    <label class="control-label">{{ field.label_tag }}</label>
-                    <div style="width: 70%">{{ field }}</div>
-                </div>
+                <div class = "form-group">
+                    <label class = "control-label">{{ field.label_tag }}</label>
+                    <div style = "width: 70%">{{ field }}</div></div>
                 {% endfor %}
 
                 <div class="form-group">
-                    <button id="signupSubmit" type="submit" class="btn btn-info">Sign Up</button>
+                    <button id="signupSubmit" type="submit" class="btn btn-info">Log in</button>
                 </div>
             </form>
         </div>
@@ -47,7 +41,6 @@
 </div>
 
 
-</body>
-</html>
+</body></html>
 
 
