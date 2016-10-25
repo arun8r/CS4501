@@ -7,19 +7,20 @@ from django.http import HttpResponse
 from django.template import loader
 
 def index(request):
+	template = loader.get_template('webLayer/index.html')
+	context = {}
+	if request.method != 'GET':
+		return HttpResponse(template.render(context, request))
+	try:
+		req = urllib.request.Request('http://exp-api:8000/api/v1/home')
+	except e:
+		return HttpResponse(template.render(context, request))
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	context = resp["resp"]
+	return HttpResponse(template.render(context, request))	
+	
 
-    template = loader.get_template('webLayer/index.html')
-    i = 1
-    prods = list()
-    while True:
-        response = retrieve_product(request, i)
-        json_obj = json.loads((response.content).decode("utf-8"))
-        if not json_obj["resp"]["resp"]["ok"]:
-            break
-        json_obj["resp"]["resp"]["resp"]["product_id"] = i
-        prods.append(json_obj["resp"]["resp"]["resp"])
-        i = i + 1
-    return HttpResponse(template.render({"products":prods}, request))
 
 def product(request, product_id):
     template = loader.get_template('webLayer/product.html')
@@ -32,7 +33,6 @@ def product(request, product_id):
         prod = json_obj["resp"]["resp"]["resp"]
         break
     return HttpResponse(template.render({"product":prod}, request))
-
 
 def retrieve_profile(request, profile_id):
     if request.method != 'GET':
@@ -56,6 +56,20 @@ def retrieve_product(request, product_id):
     resp = json.loads(resp_json)
     return _success_response(request, resp)        
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def retrieve_order(request, order_id):
 	if request.method != 'GET':
 		return _error_response(request, "Must make GET request.")
@@ -77,7 +91,6 @@ def retrieve_review(request, review_id):
 	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
 	resp = json.loads(resp_json)
 	return _success_response(request, resp) 
-
 
 
 def _error_response(request, error_msg):

@@ -321,6 +321,20 @@ def delete_review(request, review_id):
     return _success_response(request)
 
 
+#STATISTICS API
+#-------------------------------------------------------------------------------------------------------------#
+
+
+def stats(request):
+	if request.method != 'GET':
+		return _error_response(request, "Must make GET request.")
+	else:
+		return _success_response(request, {'profileCount': models.Profile.objects.count(),      \
+											   'productCount': models.Product.objects.count(),          \
+											   'orderCount': models.Order.objects.count(),          \
+											   'reviewCount': models.Review.objects.count(), 	})
+
+
 #JSON Response Methods
 
 def _error_response(request, error_msg):

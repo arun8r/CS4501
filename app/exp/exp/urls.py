@@ -21,6 +21,10 @@ urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^api/v1/profiles/(\d+)/retrieve$', views.retrieve_profile), 
     url(r'^api/v1/products/(\d+)/retrieve$', views.retrieve_product), 
+    url(r'^api/v1/products/retrieve/recent$', views.retrieve_recent), 
     url(r'^api/v1/orders/(\d+)/retrieve$', views.retrieve_order), 
-    url(r'^api/v1/reviews/(\d+)/retrieve$', views.retrieve_review)
+    url(r'^api/v1/reviews/(\d+)/retrieve$', views.retrieve_review),
+    
+	url(r'^api/v1/home$', views.home)    
+    
 ]

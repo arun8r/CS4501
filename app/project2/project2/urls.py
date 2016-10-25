@@ -38,7 +38,10 @@ urlpatterns = [
    url(r'^api/v1/reviews/(\d+)/(\d+)/create$', views.create_review, name = "create_review"), 	\
    url(r'^api/v1/reviews/(\d+)/retrieve$', views.retrieve_review, name = "retrieve_review"),	\
    url(r'^api/v1/reviews/(\d+)/update$', views.update_review, name = "update_review"),	\
-   url(r'^api/v1/reviews/(\d+)/delete$', views.delete_review, name = "delete_review")	\
+   url(r'^api/v1/reviews/(\d+)/delete$', views.delete_review, name = "delete_review"),	\
+   
+   #Statistics API
+   url(r'^api/v1/stats$', views.stats, name = "stats"),
 
 
 ]
