@@ -21,3 +21,5 @@
 11. John is a 25-year old casual tennis player who plays tennis occasionally with friends. He bought a new tennis racket and then posts a review on our website stating how the racket feels nice. However, after some time he realizes that the racket head is a little too heavy. He needs to then update his review because he feels like the review is not accurate anymore. Our website would be able to offer a feature that would allow John to update his review to be more accurate. 
 
 12. David is a 54-year old casual tennis player, who recently purchased a tennis racket from our website. He initially thought our tennis racket did not get delivered, so then he posted a very angry review for the racket. But then he realized that the racket arrived later in the afternoon, so then he should be able to delete his review, since it was no longer applicable. 
+
+13. Feliciano is a 35-year old run-of-the-mill tennis player who often feels he loses matches he should win. To improve, Feliicano wants to be able to login securely to the website and see what coaches can offer him.  
