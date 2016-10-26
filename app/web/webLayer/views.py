@@ -4,10 +4,39 @@ import urllib.request
 import urllib.parse
 import json
 from django.http import JsonResponse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
 from webLayer.forms import UserSignUpForm, UserLoginForm, ProductCreationForm
 import re
+from django.core.urlresolvers import reverse
+
+
+
+
+
+def login_required(f):
+	def wrap(request, *args, **kwargs):
+		nex = reverse('index')
+		response = HttpResponseRedirect(nex)	
+		
+		auth = request.COOKIES.get("auth")
+				
+		if auth:		
+			try:
+				req = urllib.request.Request('http://exp-api:8000/api/v1/authenticate/' + str(auth))
+			except e:
+				return repsonse
+			resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+			resp = json.loads(resp_json)				
+			if not resp["ok"]:
+				return response
+			return f(request, *args, **kwargs)
+		else:
+			return response
+	
+	return wrap
+
+
 
 
 def index(request):
@@ -63,29 +92,35 @@ def signup(request):
 
 
 def login(request):
-    form = UserLoginForm(request.POST or None)
-    if request.method == "GET":
-        return render(request, "webLayer/login.html", {"form": form})
-    if not form.is_valid():
-        return render(request, "webLayer/login.html", {"form": form})
-    username = form.cleaned_data["username"]
-    password = form.cleaned_data["password"]
-    data = {"username": username, "password": password}
-    postData = urllib.parse.urlencode(data).encode("utf-8")
-    try:
-        req = urllib.request.Request('http://exp-api:8000/api/v1/signup', data=postData, method="POST",
-                                     headers={'Content-Type': 'application/json'})
-    except e:
-        return render(request, "webLayer/login.html", {"form": form})
-    resp_json = urllib.request.urlopen(req).read().decode('utf-8')
-    resp = json.loads(resp_json)
+	form = UserLoginForm(request.POST or None)
+	if request.method == "GET":
+		return render(request, "webLayer/login.html", {"form": form})
+	if not form.is_valid():
+		return render(request, "webLayer/login.html", {"form": form})
+	username = form.cleaned_data["username"]
+	password = form.cleaned_data["password"]
+	try:
+		req = urllib.request.Request('http://exp-api:8000/api/v1/login/' + str(username) + "/" + str(password))
+	except e:
+		return render(request, "webLayer/login.html", {"form": form})
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	if not resp or not resp["ok"]:
+		return render(request, "webLayer/login.html", {"form": form})     
+	authenticator = resp['resp']["auth"]
+	fname = resp["resp"]["first_name"]
+	lname = resp["resp"]["last_name"]
+	pk = resp["resp"]["id"]
+	nex = reverse('index')
+	response = HttpResponseRedirect(nex)
+	response.set_cookie("auth", authenticator)
+	response.set_cookie("fname", fname)
+	response.set_cookie("lname", lname)
+	response.set_cookie("id", pk)
+	return response
 
-    if not resp or not resp["ok"]:
-        return render(request, "webLayer/login.html", {"form": form})
 
-    return redirect('/')
-
-
+@login_required
 def create_listing(request):
     form = ProductCreationForm(request.POST or None)
     if request.method == "GET":

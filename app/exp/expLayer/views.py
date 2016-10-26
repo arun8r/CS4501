@@ -4,7 +4,7 @@ import urllib.request
 import urllib.parse
 import json
 from django.http import JsonResponse
-
+from django.core.urlresolvers import reverse
 
 def home(request):
 	response = retrieve_recent(request, 10)
@@ -29,8 +29,33 @@ def signup(request, username, password, first_name, last_name, email, location):
 	resp = json.loads(resp_json)
 	return _success_response(request, resp)	
 	
+def login(request, username, password):
+	data = {"username": username, "password": password}
 	
-	
+	postData = urllib.parse.urlencode(data).encode("utf-8")
+		
+	try:
+		req = urllib.request.Request('http://models-api:8000/api/v1/authentication/create', postData)
+	except e:
+		return _error_response(request, "Login failed.")	
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	if not resp["ok"]:
+		return _error_response(request, "Login failed.")
+	return _success_response(request, resp["resp"])		
+
+
+def authenticate(request, authenticator):
+	try:
+		req = urllib.request.Request('http://models-api:8000/api/v1/authentication/authenticate/' + str(authenticator))
+	except e:
+		return _error_response(request, "Authenticate failed.")	
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	if not resp["ok"]:
+		return _error_response(request, "Authenticate failed.")
+	return _success_response(request, resp["resp"])	
+		
 
 
 def retrieve_recent(request, num):

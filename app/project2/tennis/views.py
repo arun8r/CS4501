@@ -346,39 +346,49 @@ def stats(request):
 
 #AUTHENTICATION API
 #-------------------------------------------------------------------------------------------------------------#
-def create_authenticator(request, user_id):
+def create_authenticator(request):
+	if request.method != 'POST':
+		return _error_response(request, "Must make POST request.")	
+	
+	
 	try:
-		v = models.Authenticator.objects.get(user_id=user_id)
-		delete_authenticator(request, user_id)
+		w = models.Profile.objects.get(username = request.POST["username"])
+	except models.Profile.DoesNotExist:
+		return _error_response(request, "Authentication failed.(1)")
+	
+	
+	if not hashers.check_password(request.POST["password"], w.password):
+		return _error_response(request, "Authentication failed.(2)")
+	
+	try:
+		v = models.Authenticator.objects.get(user_id=w.pk)
+		delete_authenticator(request, v.authenticator)
 	except models.Authenticator.DoesNotExist:
 		pass
 	k = hmac.new(key = settings.SECRET_KEY.encode('utf-8'), msg = os.urandom(32), digestmod = 'sha256').hexdigest()
 	try:
 		v = models.Authenticator.objects.get(authenticator=k)
-		delete_authenticator(request, v.user_id)
+		delete_authenticator(request, v.authenticator)
 	except models.Authenticator.DoesNotExist:
 		pass	
-	u = models.Authenticator(user_id = user_id, authenticator = k, date_created = datetime.datetime.now())
+	u = models.Authenticator(user_id = w.pk, authenticator = k, date_created = datetime.datetime.now())
 	try:
 		u.save()
 	except db.Error:
-		return _error_response(request, "Authentication failed.")
-	return _success_response(request, k)
+		return _error_response(request, "Authentication failed. (3)")
+	return _success_response(request, {"auth": k, "first_name": first_name, "last_name": last_name, "id": w.pk})
 
-def authenticate(request, user_id, authenticator):
+def authenticate(request, authenticator):
 	try:
 		u = models.Authenticator.objects.get(pk=authenticator)
 	except models.Authenticator.DoesNotExist:
 		return _error_response(request, "Authentication error.")
+	return _success_response(request, "Authentication successful.")
 
-	if u.user_id == user_id:
-			return _success_response(request, "Authentication successful.")
-	return _error_response(request, "Authentication error.")
-	
-def delete_authenticator(request, user_id):
+def delete_authenticator(request, authenticator):
     try:
-        u = models.Authenticator.objects.get(user_id = user_id)
-    except models.Review.DoesNotExist:
+        u = models.Authenticator.objects.get(authenticator = authenticator)
+    except models.Authenticator.DoesNotExist:
         return _error_response(request, "User not authenticated.")
 
     u.delete()    
