@@ -22,13 +22,14 @@
     </div>
 </nav>
 
+
 <div class="container">
     <div class="row">
         <div class="main-login main-center">
             <form id="form" method="POST" action="" role="form">
                 {% csrf_token %}
                 <div class="form-group">
-                    <h2>Sign Up</h2>
+                    <h2>Create a listing</h2>
                 </div>
 
                 {% for field in form %}
@@ -39,7 +40,7 @@
                 {% endfor %}
 
                 <div class="form-group">
-                    <button id="signupSubmit" type="submit" class="btn btn-info">Sign Up</button>
+                    <button id="signupSubmit" type="submit" class="btn btn-info">Add your product</button>
                 </div>
             </form>
         </div>
