@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import urllib
 import urllib.request
 import urllib.parse
@@ -7,7 +7,7 @@ from django.http import JsonResponse
 from django.http import HttpResponse
 from django.template import loader
 from webLayer.forms import UserSignUpForm, UserLoginForm
-
+import re
 
 def index(request):
 	template = loader.get_template('webLayer/index.html')
@@ -37,21 +37,25 @@ def signup(request):
 	lname = form.cleaned_data["lname"]
 	email = form.cleaned_data["email"]
 	location = form.cleaned_data["location"]
-		
-	data = {"username": username, "password": password, "first_name":fname, "last_name":lname, "email":email, "location":location,}
 	
-	postData = urllib.parse.urlencode(data).encode("utf-8")
+	if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+		return render(request, "webLayer/signup.html", {"form":form})
+	
+	
+	data = {"username": username, "password": password, "first_name":fname, "last_name":lname, "email":email, "location":location}
+	
+	postData = urllib.parse.urlencode(data).encode("utf-8")	
 	try:
-		req = urllib.request.Request('http://exp-api:8000/api/v1/signup', data = postData, method = "POST", headers={'Content-Type': 'application/json'})
+		req = urllib.request.Request('http://exp-api:8000/api/v1/signup/'+ str(username) + "/" + str(password) + "/" + str(fname) + "/" + str(lname) + "/" + str(email) + "/" + str(location))
 	except e:
 		return render(request, "webLayer/signup.html", {"form":form})
 	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
 	resp = json.loads(resp_json)
 	
-	if not resp or not resp["ok"]:
+	if not resp or not resp["ok"] or not resp["resp"]["ok"]:
 		return render(request, "webLayer/signup.html", {"form":form})
 					
-	return redirect('login')
+	return redirect('index')
 
 def product(request, product_id):
     template = loader.get_template('webLayer/product.html')

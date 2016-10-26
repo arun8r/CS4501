@@ -16,11 +16,13 @@ def home(request):
 	return _success_response(request, homePageItems)
 	
 
-def signup(request):
-	if request.method != 'POST':
-		return _error_response(request, "Must make POST request.")
+def signup(request, username, password, first_name, last_name, email, location):
+	data = {"username": username, "password": password, "first_name":first_name, "last_name":last_name, "email":email, "location":location}
+	
+	postData = urllib.parse.urlencode(data).encode("utf-8")
+		
 	try:
-		req = urllib.request.Request('http://models-api:8000/api/v1/profiles/create', request.POST)
+		req = urllib.request.Request('http://models-api:8000/api/v1/profiles/create', postData)
 	except e:
 		return _error_response(request, "Sign up failed.")	
 	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
