@@ -46,6 +46,6 @@ urlpatterns = [
    #User Authentication API
    url(r'^api/v1/authentication/create$', views.create_authenticator, name = "create_authenticator"),		
    url(r'^api/v1/authentication/authenticate/(?P<authenticator>\w+)/$', views.authenticate, name = "authenticate"),	
-   url(r'^api/v1/authentication/deauthenticate$', views.delete_authenticator, name = "delete_authentication"),	
+   url(r'^api/v1/authentication/deauthenticate/(?P<authenticator>\w+)/$', views.delete_authenticator, name = "delete_authentication"),	
 
 ]

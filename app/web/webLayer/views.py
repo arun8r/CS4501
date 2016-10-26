@@ -36,8 +36,20 @@ def login_required(f):
 	
 	return wrap
 
-
-
+@login_required
+def logout(request):
+	nex = reverse('index')
+	try:
+		req = urllib.request.Request('http://exp-api:8000/api/v1/logout/' + str(request.COOKIES.get('auth')))
+	except e:
+		return redirect('index')
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	
+	response = HttpResponseRedirect(nex)
+	response.delete_cookie("auth")
+	response.delete_cookie("id")
+	return response
 
 def index(request):
     template = loader.get_template('webLayer/index.html')
@@ -55,43 +67,46 @@ def index(request):
 
 
 def signup(request):
-    form = UserSignUpForm(request.POST or None)
-    if request.method == "GET":
-        return render(request, "webLayer/signup.html", {"form": form})
-
-    if not form.is_valid():
-        return render(request, "webLayer/signup.html", {"form": form})
-
-    username = form.cleaned_data["username"]
-    password = form.cleaned_data["password"]
-    fname = form.cleaned_data["fname"]
-    lname = form.cleaned_data["lname"]
-    email = form.cleaned_data["email"]
-    location = form.cleaned_data["location"]
-
-    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-        return render(request, "webLayer/signup.html", {"form": form})
-
-    data = {"username": username, "password": password, "first_name": fname, "last_name": lname, "email": email,
-            "location": location}
-
-    postData = urllib.parse.urlencode(data).encode("utf-8")
-    try:
-        req = urllib.request.Request(
-            'http://exp-api:8000/api/v1/signup/' + str(username) + "/" + str(password) + "/" + str(fname) + "/" + str(
-                lname) + "/" + str(email) + "/" + str(location))
-    except e:
-        return render(request, "webLayer/signup.html", {"form": form})
-    resp_json = urllib.request.urlopen(req).read().decode('utf-8')
-    resp = json.loads(resp_json)
-
-    if not resp or not resp["ok"] or not resp["resp"]["ok"]:
-        return render(request, "webLayer/signup.html", {"form": form})
-
-    return redirect('login')
+	
+	auth = request.COOKIES.get("auth")
+	if auth:
+		return redirect('index')
+		
+	form = UserSignUpForm(request.POST or None)
+	if request.method == "GET":
+		return render(request, "webLayer/signup.html", {"form": form})
+	if not form.is_valid():
+		return render(request, "webLayer/signup.html", {"form": form})
+	username = form.cleaned_data["username"]
+	password = form.cleaned_data["password"]
+	fname = form.cleaned_data["fname"]
+	lname = form.cleaned_data["lname"]
+	email = form.cleaned_data["email"]
+	location = form.cleaned_data["location"]
+	
+	if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+		return render(request, "webLayer/signup.html", {"form": form})
+	data = {"username": username, "password": password, "first_name": fname, "last_name": lname, "email": email, "location": location}
+	postData = urllib.parse.urlencode(data).encode("utf-8")
+	try:
+		req = urllib.request.Request('http://exp-api:8000/api/v1/signup/' + str(username) + "/" + str(password) + "/" + str(fname) + "/" + str(lname) + "/" + str(email) + "/" + str(location))
+	except e:
+		return render(request, "webLayer/signup.html", {"form": form})
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	
+	if not resp or not resp["ok"] or not resp["resp"]["ok"]:
+		return render(request, "webLayer/signup.html", {"form": form})
+	
+	return redirect('login')
 
 
 def login(request):
+	
+	auth = request.COOKIES.get("auth")
+	if auth:
+		return redirect('index')	
+	
 	form = UserLoginForm(request.POST or None)
 	if request.method == "GET":
 		return render(request, "webLayer/login.html", {"form": form})
@@ -108,41 +123,35 @@ def login(request):
 	if not resp or not resp["ok"]:
 		return render(request, "webLayer/login.html", {"form": form})     
 	authenticator = resp['resp']["auth"]
-	fname = resp["resp"]["first_name"]
-	lname = resp["resp"]["last_name"]
 	pk = resp["resp"]["id"]
 	nex = reverse('index')
 	response = HttpResponseRedirect(nex)
 	response.set_cookie("auth", authenticator)
-	response.set_cookie("fname", fname)
-	response.set_cookie("lname", lname)
 	response.set_cookie("id", pk)
 	return response
 
 
 @login_required
 def create_listing(request):
-    form = ProductCreationForm(request.POST or None)
-    if request.method == "GET":
-        return render(request, "webLayer/create-listing.html", {"form": form})
-    if not form.is_valid():
-        return render(request, "webLayer/create-listing.html", {"form": form})
-    name = form.cleaned_data["name"]
-    description = form.cleaned_data["description"]
-    price = form.cleaned_data["price"]
-    data = {"name": name, "description": description, "price": price}
-    postData = urllib.parse.urlencode(data).encode("utf-8")
-    try:
-        req = urllib.request.Request('http://exp-api:8000/api/v1/signup', data=postData, method="POST",
-                                     headers={'Content-Type': 'application/json'})
-    except e:
-        return render(request, "webLayer/create-listing.html", {"form": form})
-    resp_json = urllib.request.urlopen(req).read().decode("utf-8")
-    resp - json.loads(resp_json)
-    if not resp or not resp["ok"]:
-        return render(request, "webLayer/create-listing.html", {"form": form})
-
-    return redirect('/')
+	form = ProductCreationForm(request.POST or None)
+	if request.method == "GET":
+		return render(request, "webLayer/create_listing.html", {"form": form})
+	if not form.is_valid():
+		return render(request, "webLayer/create_listing.html", {"form": form})
+	name = form.cleaned_data["name"]
+	desc = form.cleaned_data["description"]
+	price = form.cleaned_data["price"]
+	user_id = request.COOKIES.get("id")
+	url = str(name) + "/" + str(desc)  + "/" + str(price) + "/" + str(user_id)
+	try:
+		req = urllib.request.Request("http://exp-api:8000/api/v1/create_listing/" + urllib.parse.quote(url))
+	except e:
+		return render(request, "webLayer/create_listing.html", {"form": form})
+	resp_json = urllib.request.urlopen(req).read().decode("utf-8")
+	resp = json.loads(resp_json)
+	if not resp or not resp["ok"]:
+		return render(request, "webLayer/create_listing.html", {"form": form})
+	return redirect('/')
 
 
 def product(request, product_id):

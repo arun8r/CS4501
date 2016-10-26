@@ -15,6 +15,17 @@ def home(request):
 	homePageItems["products"] = json_obj["resp"]["products"]
 	return _success_response(request, homePageItems)
 	
+	
+def create_listing(request, name, description, price, user_id):
+	data = {"name":name, "description":description,"price": price, "user_id":user_id}
+	postData = urllib.parse.urlencode(data).encode("utf-8")
+	try:
+		req = urllib.request.Request('http://models-api:8000/api/v1/products/' + str(user_id) + '/create', postData)
+	except e:
+		return _error_response(request, "Sign up failed.")	
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	return _success_response(request, resp)			
 
 def signup(request, username, password, first_name, last_name, email, location):
 	data = {"username": username, "password": password, "first_name":first_name, "last_name":last_name, "email":email, "location":location}
@@ -43,6 +54,19 @@ def login(request, username, password):
 	if not resp["ok"]:
 		return _error_response(request, "Login failed.")
 	return _success_response(request, resp["resp"])		
+
+
+def logout(request, authenticator):
+	try:
+		req = urllib.request.Request('http://models-api:8000/api/v1/authentication/deauthenticate/' + str(authenticator))
+	except e:
+		return _error_response(request, "Authenticate failed.")	
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	if not resp["ok"]:
+		return _error_response(request, "User not logged out.")
+	return _success_response(request, resp["resp"])	
+
 
 
 def authenticate(request, authenticator):

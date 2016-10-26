@@ -376,7 +376,7 @@ def create_authenticator(request):
 		u.save()
 	except db.Error:
 		return _error_response(request, "Authentication failed. (3)")
-	return _success_response(request, {"auth": k, "first_name": first_name, "last_name": last_name, "id": w.pk})
+	return _success_response(request, {"auth": k, "id": w.pk})
 
 def authenticate(request, authenticator):
 	try:
@@ -393,7 +393,7 @@ def delete_authenticator(request, authenticator):
 
     u.delete()    
 
-    return _success_response(request)	
+    return _success_response(request, resp = "Successfully deleted.")	
 	
 #JSON Response Methods
 

@@ -27,6 +27,9 @@ urlpatterns = [
     url(r'^api/v1/signup/(?P<username>[-\w]+)/(?P<password>\w+)/(?P<first_name>\w+)/(?P<last_name>\w+)/(?P<email>[^/]+)/(?P<location>\w+)/$', views.signup),
 	url(r'^api/v1/login/(?P<username>[-\w]+)/(?P<password>\w+)/$', views.login),	
 	url(r'^api/v1/home$', views.home),
-	url(r'^api/v1/authenticate/(?P<authenticator>\w+)/$', views.authenticate)	    
+	url(r'^api/v1/authenticate/(?P<authenticator>\w+)/$', views.authenticate),
+	url(r'^api/v1/logout/(?P<authenticator>\w+)/$', views.logout),
+	url(r'^api/v1/create_listing/(.*)/(.*)/(.*)/(.*)/$', views.create_listing),
+	
     
 ]
