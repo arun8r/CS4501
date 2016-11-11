@@ -10,10 +10,6 @@ from webLayer.forms import UserSignUpForm, UserLoginForm, ProductCreationForm
 import re
 from django.core.urlresolvers import reverse
 
-
-
-
-
 def login_required(f):
 	def wrap(request, *args, **kwargs):
 		nex = reverse('index')
