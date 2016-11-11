@@ -57,4 +57,4 @@ batch:
    links:
       - kafka:kafka
       - es:es
-   command: bash -c "python /app/search/indexing.py"
+   command: bash -c "bash /app/search/batchScript.sh"
