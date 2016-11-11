@@ -26,7 +26,7 @@ def create_listing(request, name, description, price, user_id):
 	try:
 		req = urllib.request.Request('http://models-api:8000/api/v1/products/' + str(user_id) + '/create', postData)
 	except e:
-		return _error_response(request, "Sign up failed.")	
+		return _error_response(request, "Listing failed.")	
 	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
 	resp = json.loads(resp_json)
 	pk = resp["resp"]["product_id"]
@@ -40,9 +40,11 @@ def create_listing(request, name, description, price, user_id):
 def search(request, searchTerm):
 	if request.method != "GET":
 		return _error_response(request, "Must make GET request.")
-	
 	es = Elasticsearch(['es'])
-	result = es.search(index = 'listing-indexer', body = {'query': {'query_string':{'query':searchTerm}}})
+	try:
+		result = es.search(index = 'listing-indexer', body = {'query': {'query_string':{'query':searchTerm}}})
+	except Exception as e:
+		return _error_response(request, "Listing failed.")
 	
 	searchResults = []
 	for product in result['hits']['hits']:
