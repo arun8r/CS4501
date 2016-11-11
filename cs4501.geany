@@ -27,13 +27,7 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=5
-FILE_NAME_0=0;Python;0;EUTF-8;1;1;0;%2Fhome%2Farun%2Fcs4501%2Fapp%2Fproject2%2Ftennis%2Fmodels.py;0;4
-FILE_NAME_1=11296;Python;0;EUTF-8;1;1;0;%2Fhome%2Farun%2Fcs4501%2Fapp%2Fproject2%2Ftennis%2Ftests.py;0;4
-FILE_NAME_2=2221;Python;0;EUTF-8;1;1;0;%2Fhome%2Farun%2Fcs4501%2Fapp%2Fproject2%2Fproject2%2Furls.py;0;4
-FILE_NAME_3=0;Python;0;EUTF-8;1;1;0;%2Fhome%2Farun%2Fcs4501%2Fapp%2Fproject2%2Ftennis%2Fviews.py;0;4
-FILE_NAME_4=0;Python;0;EUTF-8;1;1;0;%2Fhome%2Farun%2Fcs4501%2Fapp%2Fexp%2FexpLayer%2Fviews.py;0;4
-FILE_NAME_5=1063;YAML;0;EUTF-8;1;1;0;%2Fhome%2Farun%2Fcs4501%2Fdocker-compose.yml;0;4
+current_page=-1
 
 [VTE]
 last_dir=/home/arun

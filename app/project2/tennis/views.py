@@ -380,9 +380,9 @@ def create_authenticator(request):
 
 def authenticate(request, authenticator):
 	try:
-		u = models.Authenticator.objects.get(pk=authenticator)
+		u = models.Authenticator.objects.get(pk=authenticator)			
 	except models.Authenticator.DoesNotExist:
-		return _error_response(request, "Authentication error.")
+		return _error_response(request, "Authentication error.")		
 	return _success_response(request, "Authentication successful.")
 
 def delete_authenticator(request, authenticator):
