@@ -14,6 +14,8 @@ exp:
     image: tp33/django
     links:
       -  models:models-api
+      -  kafka:kafka
+      -  es:es      
     volumes:
       - "$PWD/app:/app"
     ports:
@@ -55,4 +57,4 @@ batch:
    links:
       - kafka:kafka
       - es:es
-   command: bash -c "python /app/search/indexing.py"
+   command: bash -c "bash /app/search/batchScript.sh"
