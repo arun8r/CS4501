@@ -5,7 +5,7 @@ import json
 import time
 
 
-time.sleep(20)
+time.sleep(30)
 elasticsearch = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
 consumer = KafkaConsumer('new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
 for message in consumer:

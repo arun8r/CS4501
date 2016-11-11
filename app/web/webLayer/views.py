@@ -61,7 +61,9 @@ def index(request):
     context = resp["resp"]
     return HttpResponse(template.render(context, request))
 
-
+def productsearch(request):
+    
+    
 def signup(request):
 	
 	auth = request.COOKIES.get("auth")
@@ -162,6 +164,7 @@ def product(request, product_id):
         break
     return HttpResponse(template.render({"product": prod}, request))
 
+def productsearch(request,pr)
 
 def retrieve_profile(request, profile_id):
     if request.method != 'GET':

@@ -21,7 +21,7 @@ def home(request):
 def create_listing(request, name, description, price, user_id):
 	data = {"name":name, "description":description,"price": price, "user_id":user_id}
 	postData = urllib.parse.urlencode(data).encode("utf-8")
-	#producer.send('new-listings-topic', json.dumps(data).encode('utf-8'))
+	producer.send('new-listings-topic', json.dumps(data).encode('utf-8'))
 	try:
 		req = urllib.request.Request('http://models-api:8000/api/v1/products/' + str(user_id) + '/create', postData)
 	except e:
@@ -167,6 +167,26 @@ def retrieve_stats(request):
 	resp = json.loads(resp_json)
 	return _success_response(request, resp)
 
+def search(request):
+    if request.method != "POST" or not request.POST.get('query'):
+        return HttpResponseBadRequest()
+        
+    string = request.POST.get('query')
+    
+    result = elasticsearch.search(index = 'listing-indexer',
+    body={
+        'query':{
+        'query_string':{
+            'query':string
+        }
+    }})
+    
+    
+    searchresults = []
+    for product in result['hits']['hits']:
+        if '_source' in product:
+            searchresults.append(product['_source'])
+    return HttpResponse(json.dumps(searchresults))
 
 def _error_response(request, error_msg):
     return JsonResponse({'ok': False, 'error': error_msg})
