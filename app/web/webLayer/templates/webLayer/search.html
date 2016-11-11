@@ -1,0 +1,58 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+    <META http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+
+
+<head>
+    <link rel="stylesheet" href="https://bootswatch.com/sandstone/bootstrap.min.css">
+</head>
+
+
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="/">Tennis Heaven</a>
+            <a class="navbar-text navbar-right" href="signup">Sign-up</a>
+            <a class="navbar-text navbar-right" href="login">Login</a>
+            <a class="navbar-text navbar-right" href="logout">Logout</a>
+            <a class="navbar-text navbar-right" href="search">Search</a>
+            <a class="navbar-text navbar-right" href="create_listing">Sell something</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="input-group col-md-12">
+
+            <form id="form" method="POST" action="" role="form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <h2>Search</h2>
+                </div>
+
+                {% for field in form %}
+                
+                <div class="form-group">
+                    <label class="control-label">{{ field.label_tag }}</label>
+                    <div style="width: 170%">{{ field }}</div>
+                </div>                
+                
+                {% endfor %}
+
+                <div class="form-group">
+                <span class="input-group-btn">
+                        <button id="searchSubmit" type = "subimt" class="btn btn-info btn-lg">
+                            <i class="glyphicon glyphicon-search"></i>
+                        </button>
+				</span>
+                </div>
+            </form>
+            </div>
+        </div>
+	</div>
+</div>
