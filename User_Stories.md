@@ -22,4 +22,6 @@
 
 12. David is a 54-year old casual tennis player, who recently purchased a tennis racket from our website. He initially thought our tennis racket did not get delivered, so then he posted a very angry review for the racket. But then he realized that the racket arrived later in the afternoon, so then he should be able to delete his review, since it was no longer applicable. 
 
-13. Feliciano is a 35-year old run-of-the-mill tennis player who often feels he loses matches he should win. To improve, Feliicano wants to be able to login securely to the website and see what coaches can offer him.  
+13. Feliciano is a 35-year old run-of-the-mill tennis player who often feels he loses matches he should win. To improve, Feliicano wants to be able to login securely to the website and see what coaches can offer him.
+
+14. Venus is a 32-old serious tennis player who would like to look for a specific "Head" brand tennis racket to buy. To do so, she uses tennis heaven's search functionality to look for tennis rackets with the keyword "Head" in them.
