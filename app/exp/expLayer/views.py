@@ -4,9 +4,10 @@ from kafka import KafkaProducer, KafkaConsumer
 import urllib.request
 import urllib.parse
 import json
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from django.core.urlresolvers import reverse
-producer = KafkaProducer(bootstrap_servers=['kafka:9092'])
+
+
 
 def home(request):
 	response = retrieve_recent(request, 10)
@@ -21,14 +22,35 @@ def home(request):
 def create_listing(request, name, description, price, user_id):
 	data = {"name":name, "description":description,"price": price, "user_id":user_id}
 	postData = urllib.parse.urlencode(data).encode("utf-8")
-	#producer.send('new-listings-topic', json.dumps(data).encode('utf-8'))
+
 	try:
 		req = urllib.request.Request('http://models-api:8000/api/v1/products/' + str(user_id) + '/create', postData)
 	except e:
 		return _error_response(request, "Sign up failed.")	
 	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
 	resp = json.loads(resp_json)
+	pk = resp["resp"]["product_id"]
+	data['id'] = pk
+	producer = KafkaProducer(bootstrap_servers=['kafka:9092'])	
+	producer.send('new-listings-topic', json.dumps(data).encode('utf-8'))
 	return _success_response(request, resp)			
+
+
+
+def search(request, searchTerm):
+	if request.method != "GET":
+		return _error_response(request, "Must make GET request.")
+	
+	es = Elasticsearch(['es'])
+	result = es.search(index = 'listing-indexer', body = {'query': {'query_string':{'query':searchTerm}}})
+	
+	searchResults = []
+	for product in result['hits']['hits']:
+		searchResults.append(product['_source'])
+	if len(searchResults) == 0:
+		return _error_response(request, "No products found!")
+	else:
+		return _success_response(request, searchResults)
 
 def signup(request, username, password, first_name, last_name, email, location):
 	data = {"username": username, "password": password, "first_name":first_name, "last_name":last_name, "email":email, "location":location}
@@ -166,6 +188,8 @@ def retrieve_stats(request):
 	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
 	resp = json.loads(resp_json)
 	return _success_response(request, resp)
+
+
 
 
 def _error_response(request, error_msg):

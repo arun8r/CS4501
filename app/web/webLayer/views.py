@@ -6,7 +6,7 @@ import json
 from django.http import JsonResponse
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from webLayer.forms import UserSignUpForm, UserLoginForm, ProductCreationForm
+from webLayer.forms import UserSignUpForm, UserLoginForm, ProductCreationForm, SearchForm
 import re
 from django.core.urlresolvers import reverse
 
@@ -61,6 +61,32 @@ def index(request):
     context = resp["resp"]
     return HttpResponse(template.render(context, request))
 
+
+def search(request):
+	form = SearchForm(request.POST or None)
+	if request.method == "GET":
+		return render(request, "webLayer/search.html", {"form": form})
+	if not form.is_valid():
+		return render(request, "webLayer/search.html", {"form": form})
+		
+	query = form.cleaned_data['query']
+	
+	try:
+		req = urllib.request.Request('http://exp-api:8000/api/v1/search/' + str(query) + '/')
+	except e:
+		return render(request, "webLayer/search.html", {"form": form})
+	resp_json = urllib.request.urlopen(req).read().decode('utf-8')
+	resp = json.loads(resp_json)
+	
+	if not resp:
+		return render(request, "webLayer/search.html", {"form": form})	
+	
+	if not resp["ok"]:
+		return render(request, "webLayer/results.html")
+
+	context = {"products": resp["resp"]}
+	template = loader.get_template('webLayer/results.html')	
+	return HttpResponse(template.render(context, request))		
 
 def signup(request):
 	

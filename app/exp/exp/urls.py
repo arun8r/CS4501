@@ -30,6 +30,7 @@ urlpatterns = [
 	url(r'^api/v1/authenticate/(?P<authenticator>\w+)/$', views.authenticate),
 	url(r'^api/v1/logout/(?P<authenticator>\w+)/$', views.logout),
 	url(r'^api/v1/create_listing/(.*)/(.*)/(.*)/(.*)/$', views.create_listing),
+	url(r'^api/v1/search/(.*)/$', views.search, name = 'search'),
 	
     
 ]

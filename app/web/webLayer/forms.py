@@ -19,6 +19,7 @@ class ProductCreationForm(forms.Form):
 	description = forms.CharField(max_length = 1000)
 	price = forms.DecimalField(max_digits = 8, decimal_places = 2)
 
-
+class SearchForm(forms.Form):
+	query = forms.CharField(max_length = 100)
 
 

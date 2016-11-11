@@ -5,10 +5,10 @@ import json
 import time
 
 
-time.sleep(20)
-elasticsearch = Elasticsearch([{'host': 'elasticsearch', 'port': 9200}])
+time.sleep(30)
+es = Elasticsearch(['es'])
 consumer = KafkaConsumer('new-listings-topic', group_id='listing-indexer', bootstrap_servers=['kafka:9092'])
 for message in consumer:
     new_sale = (json.loads((message.value).decode('utf-8')))
-    ret = elasticsearch.index(index='listing-indexer',doc_type = 'listing',id = new_sale['id'])
-    elasticsearch.indices.refresh(index="listing-indexer")
+    ret = es.index(index='listing-indexer',doc_type = 'listing',id = new_sale['id'], body = new_sale)
+    es.indices.refresh(index="listing-indexer")

@@ -23,6 +23,7 @@ urlpatterns = [
 	url(r'^signup$', views.signup, name = 'signup'),
 	url(r'^login$', views.login, name = 'login'),
 	url(r'^logout$', views.logout, name = 'logout'),
+	url(r'^search$', views.search, name = 'search'),
     url(r'^(?P<product_id>[0-9]+)/$', views.product, name='getProduct'),
     url(r'^create_listing$', views.create_listing, name = 'create_listing'),
     url(r'^api/v1/profiles/(\d+)/retrieve$', views.retrieve_profile), 
