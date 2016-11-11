@@ -1,11 +1,11 @@
 from django.shortcuts import render
-
+#from kafka import KafkaProducer, KafkaConsumer
 import urllib.request
 import urllib.parse
 import json
 from django.http import JsonResponse
 from django.core.urlresolvers import reverse
-
+#producer = KafkaProducer(bootstrap_servers='kafka:9092')
 def home(request):
 	response = retrieve_recent(request, 10)
 	json_obj = json.loads((response.content).decode("utf-8"))
@@ -19,6 +19,7 @@ def home(request):
 def create_listing(request, name, description, price, user_id):
 	data = {"name":name, "description":description,"price": price, "user_id":user_id}
 	postData = urllib.parse.urlencode(data).encode("utf-8")
+    #producer.send('new-listings-topic', json.dumps(data).encode('utf-8'))
 	try:
 		req = urllib.request.Request('http://models-api:8000/api/v1/products/' + str(user_id) + '/create', postData)
 	except e:
