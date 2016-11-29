@@ -9,6 +9,7 @@ before_install:
  - docker pull tp33/django
  - docker pull mysql:5.7.14
  - mkdir db
+ - ls
  - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v db:/var/lib/mysql  mysql:5.7.14
  - sleep 2
  - docker run -it -d --name mysql-cmdline --link mysql:db mysql:5.7.14 bash
