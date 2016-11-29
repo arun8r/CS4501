@@ -9,13 +9,12 @@ before_install:
  - docker pull tp33/django
  - docker pull mysql:5.7.14
  - docker run --name mysql -d -e MYSQL\_ROOT\_PASSWORD='$3cureUS' -v db:/var/lib/mysql  mysql:5.7.14
- - docker run -it --name mysql-cmdline --link mysql:db mysql:5.7.14 bash
- - mysql -uroot -p'$3cureUS' -h db
- - create user 'www'@'%' identified by '$3cureUS';
- - create database cs4501 character set utf8;
- - grant all on cs4501.* to 'www'@'%';
- - exit
- - exit
+ - docker run -it -d --name mysql-cmdline --link mysql:db mysql:5.7.14 bash
+ - docker exec mysql-cmdline mysql -uroot -p'$3cureUS' -h db
+ - docker exec mysql-cmdline create user 'www'@'%' identified by '$3cureUS';
+ - docker exec mysql-cmdline create database cs4501 character set utf8;
+ - docker exec mysql-cmdline grant all on cs4501.* to 'www'@'%';
+ - docker exec mysql-cmdline exit
  - docker-compose up
 
 script:
