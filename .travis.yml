@@ -13,9 +13,11 @@ before_install:
  - sleep 10
  - docker run -it --name mysql-cmdline --link mysql:db mysql:5.7.14 mysql -uroot -p'$3cureUS' -h db -e "create user 'www'@'%' identified by '$3cureUS'; create database cs4501 character set utf8; grant all on cs4501.* to 'www'@'%';"
  - docker rm mysql-cmdline
+ 
+before_script:
  - docker-compose up -d
 script:
- - docker exec -it cs4501_models_1 bash -c "pip install -r requirements.txt && python app/project2/manage.py"
+ - docker exec -it cs4501_models_1 bash -c
 after_script:
  - docker-compose rm
  - y
