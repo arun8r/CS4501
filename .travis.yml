@@ -19,7 +19,7 @@ before_install:
 before_script:
  - docker-compose up -d
 script:
- - docker exec -it cs4501_models_1 python /app/project2/manage.py
+ - docker exec -it cs4501_models_1 python /app/project2/manage.py test --noinput
 after_script:
  - docker-compose stop
  - docker stop mysql
