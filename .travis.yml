@@ -22,6 +22,5 @@ script:
  - docker exec -it cs4501_models_1 bash -c "cd project2 && ./manage.py test"
 after_script:
  - docker-compose stop
- - docker-compose rm
- - y
+ - docker-compose rm y
  - rm -rf db
