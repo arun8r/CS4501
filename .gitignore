@@ -1,3 +1,7 @@
 .idea
 /app/db/
 /**/migrations/
+/app/exp/exp/__pycache__/
+/app/exp/expLayer/__pycache__/
+/app/web/web/__pycache__/
+/app/web/webLayer/__pycache__/
