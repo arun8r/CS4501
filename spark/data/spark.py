@@ -18,8 +18,12 @@ filtered = count.filter(lambda z: z[1] >= 3) #filters only where value>=3
 output = filtered.collect()
 
 print("Results from spark:\n")
+total = 0
 for page_id, count in output:
     print ("co-viewed items: %s were viewed %d times" % (page_id, count))
+    total+=count
+
+print("Sum of the above views:", total)
 
 
 sc.stop()
