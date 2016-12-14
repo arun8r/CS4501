@@ -37,7 +37,7 @@ for i in range(len(prod)):
 sortedAnswers = sorted(list(answers.keys()))
 count = 0
 for key in answers:
-	print("Products people viewed:", key, "Number of people who viewed both products:", answers[key])
 	if answers[key] >= 3:
+		print("Products people viewed:", key, "Number of people who viewed both products:", answers[key])
 		count = count + answers[key]
 print(count)
